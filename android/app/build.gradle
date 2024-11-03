@@ -1,0 +1,67 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+android {
+    namespace = "com.shahi.fitness_app_ui"
+    compileSdk = localProperties.getProperty('flutter.compileSdkVersion').toInteger()
+    ndkVersion = localProperties.getProperty('flutter.ndkVersion')
+
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_11
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    packagingOptions {
+        resources {
+            excludes += ['META-INF/DEPENDENCIES', 'META-INF/LICENSE', 'META-INF/LICENSE.txt', 'META-INF/license.txt', 'META-INF/NOTICE', 'META-INF/NOTICE.txt', 'META-INF/notice.txt', 'META-INF/ASL2.0']
+        }
+    }
+
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:-options"
+    }
+
+    defaultConfig {
+        applicationId = "com.shahi.fitness_app_ui"
+        minSdk = localProperties.getProperty('flutter.minSdkVersion').toInteger()
+        targetSdk = localProperties.getProperty('flutter.targetSdkVersion').toInteger()
+        versionCode = localProperties.getProperty('flutter.versionCode').toInteger()
+        versionName = localProperties.getProperty('flutter.versionName')
+        multiDexEnabled true
+    }
+
+    buildTypes {
+        release {
+            signingConfig = signingConfigs.debug
+        }
+    }
+}
+
+flutter {
+    source = "../.."
+}
+
+dependencies {
+    implementation "androidx.multidex:multidex:2.0.1"
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.2'
+}
